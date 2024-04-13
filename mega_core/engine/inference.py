@@ -23,8 +23,9 @@ def compute_on_dataset(model, data_loader, device, bbox_aug, method, timer=None,
     model.eval()
     results_dict = {}
     cpu_device = torch.device("cpu")
+    print("waring: eval dataset use coco need check id map in [mega_core/data/datasets/evaluation/vid/vid_eval.py]")
     for i, batch in enumerate(tqdm(data_loader)):
-        # if i==200:
+        # if i==40:
         #     break
 
         images, targets, image_ids = batch

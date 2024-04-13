@@ -28,12 +28,7 @@ def plot_TSNE(features_all, proposals_all, mem, class_labels):
     xs = mem_data_tsne[:, 0]
     ys = mem_data_tsne[:, 1]
     label_names = ['bg',  # always index 0
-                   'airplane', 'antelope', 'bear', 'bicycle', 'bird',
-                   'bus', 'car', 'cattle', 'dog', 'domestic_cat',
-                   'elephant', 'fox', 'giant_panda', 'hamster', 'horse',
-                   'lion', 'lizard', 'monkey', 'motorcycle', 'rabbit',
-                   'red_panda', 'sheep', 'snake', 'squirrel', 'tiger',
-                   'train', 'turtle', 'watercraft', 'whale', 'zebra']
+                'carcrowd',"bicycle", "bicyclecrowd", "car", "ignore", "people", "peoplecrowd", "static_peoplebicycle" ]
     colors = ['black',  # always index 0
               'brown', 'chocolate', 'gold', 'khaki', 'olive',
               'greenyellow', 'darkolivegreen', 'darkseagreen', 'springgreen', 'r',

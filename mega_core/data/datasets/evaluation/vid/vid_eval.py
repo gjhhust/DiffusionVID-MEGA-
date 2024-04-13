@@ -21,11 +21,16 @@ def do_vid_evaluation(dataset, predictions, output_folder, box_only, motion_spec
             remove_images_without_annotations=False,
             transforms=None,  # transformations should be already saved to the json
         )
+        suffix = list(coco_dataset.coco.imgs.values())[0]["file_name"].split(".")[-1]
         for i, image_file_ in enumerate(dataset.image_set_index):
-            image_file = "%s.jpg" % image_file_
+            image_file = f"%s.{suffix}" % image_file_
+            find_flag = 0
             for img_info in coco_dataset.coco.imgs.values():
                 if img_info["file_name"] == image_file:
+                    find_flag = 1
                     break
+            if find_flag==0:
+                print(f"can't find image: [{image_file}] in test.json, please check")
             coco_dataset.id_to_img_map[i] = img_info["id"]
         
 

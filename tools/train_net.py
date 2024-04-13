@@ -150,6 +150,30 @@ def run_test(cfg, model, distributed, motion_specific=False):
         )
         synchronize()
 
+import yacs.config as config
+import yaml
+import ast
+def coerce_cfg_merge(cfg_old, cfg_new):
+    """
+    递归遍历两个配置文件，并将不匹配的值从 cfg_old 中转换为 cfg_new 中相应项的类型。
+    
+    Args:
+        cfg_old: 旧的YACS配置对象
+        cfg_new: 新的YACS配置对象
+    """
+    if isinstance(cfg_old, config.CfgNode) and isinstance(cfg_new, config.CfgNode):
+        for key in cfg_new.keys():
+            if key in cfg_old:
+                if isinstance(cfg_new[key], config.CfgNode):
+                    coerce_cfg_merge(cfg_old[key], cfg_new[key])
+                elif type(cfg_old[key]) != type(cfg_new[key]):
+                    try:
+                        if isinstance(cfg_old[key], tuple):
+                            cfg_old[key] = ast.literal_eval(cfg_new[key])
+                        else:
+                            cfg_old[key] = cfg_new[key]
+                    except:
+                        pass  # 忽略无法转换的值
 
 def main():
     #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # for debugging
@@ -203,9 +227,14 @@ def main():
     
     # this is similar to the behavior of detectron2, which I think is a nice option.
     BASE_CONFIG = "configs/BASE_RCNN_{}gpu.yaml".format(num_gpus)
+    
     cfg.merge_from_file(BASE_CONFIG)
     if 'Diffusion' in args.config_file:
         add_diffusiondet_config(cfg)
+    
+    with open(args.config_file, "r") as f:
+        cfg_new = config.load_cfg(f)
+    coerce_cfg_merge(cfg, cfg_new)
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
 

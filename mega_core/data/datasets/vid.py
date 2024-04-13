@@ -26,9 +26,9 @@ class VIDDataset(torch.utils.data.Dataset):
     
     #TODO: 调整分类适应你的数据集
     classes = ['__background__',  # always index 0
-                    '1', '2']
+                'carcrowd',"bicycle", "bicyclecrowd", "car", "ignore", "people", "peoplecrowd", "static_peoplebicycle" ]
     classes_map = ['__background__',  # always index 0
-                    '1', '2']
+                    '1', '2', '3', '4', '5', '6', '7', '8']
 
     def __init__(self, image_set, data_dir, img_dir, anno_path, img_index, transforms, image_pattern_mode="imagevid", coco_json=None, is_train=True, all_train_txt = None):
         self.det_vid = image_set.split("_")[0]
@@ -42,7 +42,7 @@ class VIDDataset(torch.utils.data.Dataset):
 
         self.is_train = is_train
 
-        self._img_dir = os.path.join(self.img_dir, "%s.jpg")
+        self._img_dir = os.path.join(self.img_dir, "%s.png")
         self._anno_path = os.path.join(self.anno_path, "%s.xml")
 
         if coco_json is not None:
@@ -56,13 +56,16 @@ class VIDDataset(torch.utils.data.Dataset):
             self.image_set_index = [x[0] for x in lines]
             self.frame_id = [int(x[1]) for x in lines]
         else:
-            if image_pattern_mode is "imagevid":
+            if image_pattern_mode in ["imagevid"]:
                 self.image_set_index = [x[0]+ "/%07d" % int(x[2]) for x in lines]
                 self.pattern = [x[0] + "/%07d" for x in lines]
-            elif image_pattern_mode is "gaode_4":
+            elif image_pattern_mode == "gaode_4":
                 self.image_set_index = [x[0]+ "/" + x[0] + "_%04d" % int(x[2]) for x in lines]
                 self.pattern = [x[0]+ "/" + x[0] + "_%04d" for x in lines]
-                
+            elif image_pattern_mode in ["UAVTOD"]:
+                self.image_set_index = [x[0]+ "/%07d" % (int(x[2])-1) for x in lines]
+                self.pattern = [x[0] + "/%07d" for x in lines]    
+
             self.frame_id = [int(x[1]) for x in lines]
             self.frame_seg_id = [int(x[2]) for x in lines]
             self.frame_seg_len = [int(x[3]) for x in lines]
@@ -75,8 +78,13 @@ class VIDDataset(torch.utils.data.Dataset):
                     video_name = item[0]
                     if video_name not in videos_dict:
                         videos_dict[video_name] = []
-                    videos_dict[video_name].append(int(item[2]))
+                    if image_pattern_mode in ["UAVTOD"]:
+                        videos_dict[video_name].append(int(item[2])-1)
+                    else:
+                        videos_dict[video_name].append(int(item[2]))
+                
                 self.frame_seg_exists = [videos_dict[x[0]] for x in lines]
+
                 self.is_custom_vid = True
 
         if self.is_train:
@@ -91,6 +99,7 @@ class VIDDataset(torch.utils.data.Dataset):
                 self.frame_id = [self.frame_id[idx] for idx in range(len(keep)) if keep[idx]]
                 self.frame_seg_id = [self.frame_seg_id[idx] for idx in range(len(keep)) if keep[idx]]
                 self.frame_seg_len = [self.frame_seg_len[idx] for idx in range(len(keep)) if keep[idx]]
+                self.frame_seg_exists = [self.frame_seg_exists[idx] for idx in range(len(keep)) if keep[idx]]
 
         self.classes_to_ind = dict(zip(self.classes, range(len(self.classes_map))))
         self.categories = dict(zip(range(len(self.classes)), self.classes))

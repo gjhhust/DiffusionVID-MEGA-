@@ -6,7 +6,7 @@ from .vid import VIDDataset
 from mega_core.config import cfg
 import torch
 import cv2
-
+import os
 class VIDMEGADataset(VIDDataset):
     def __init__(self, image_set, data_dir, img_dir, anno_path, img_index, transforms, **kwargs):
         super(VIDMEGADataset, self).__init__(image_set, data_dir, img_dir, anno_path, img_index, transforms, **kwargs)
@@ -34,12 +34,17 @@ class VIDMEGADataset(VIDDataset):
                 else:
                     self.start_id.append(self.start_index[-1])
     def filename_to_frame_id(self,filename):
-        if self.image_pattern_mode == "imagevid":
+        if self.image_pattern_mode in ["imagevid", "UAVTOD"]:
             frame_id = int(filename.split("/")[-1])
         elif self.image_pattern_mode == "gaode_4":
             frame_id = int(filename.split("/")[-1].split("_")[-1])
+        if self.image_pattern_mode in ["UAVTOD"]:
+            frame_id = int(filename.split("/")[-1]) + 1 #图片文件对应到注释文件的帧号+1
         return frame_id
 
+    # def check_file(self, path, idx):
+    #     while not os.path.exists(path):
+    #         path = 
     def _get_train(self, idx):
         filename = self.image_set_index[idx]
         img = Image.open(self._img_dir % filename).convert("RGB")
@@ -96,6 +101,8 @@ class VIDMEGADataset(VIDDataset):
                 for ref_id in ref_ids:
                     ref_id = np.clip(ref_id, self.start_frame_number, None)
                     ref_filename = self.pattern[idx] % ref_id
+                    if not os.path.exists(self._img_dir % ref_filename):
+                        print(ref_id)
                     img_ref = Image.open(self._img_dir % ref_filename).convert("RGB")
                     img_refs_g.append(img_ref)
                     # get gt of global img

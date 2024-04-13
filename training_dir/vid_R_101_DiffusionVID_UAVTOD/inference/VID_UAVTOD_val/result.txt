@@ -1,0 +1,17 @@
+AP50 | motion=   all = 0.2218
+Category AP:
+carcrowd        : nan
+bicycle         : 0.2287
+bicyclecrowd    : nan
+car             : 0.6883
+ignore          : 0.0003
+people          : 0.1907
+peoplecrowd     : nan
+static_peoplebicycle: 0.0009
+Mean CorLoc: 0.2383
+Category CorLoc:
+people          : 0.1951
+bicycle         : 0.0871
+car             : 0.9091
+ignore          : 0.0000
+static_peoplebicycle: 0.0000

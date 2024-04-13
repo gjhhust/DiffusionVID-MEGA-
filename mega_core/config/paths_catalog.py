@@ -183,6 +183,23 @@ class DatasetCatalog(object):
             "coco_json":"/data1/jiahaoguo/dataset/gaode_4_all/annotations/test_half.json"
         }, 
 
+        "VID_UAVTOD_train_all": {
+            "dataset_dir": "/data1/jiahaoguo/dataset/UAVTOD_1",
+            "img_dir": "images",
+            "anno_path": "all/vid/Annotations/train",
+            "img_index": "all/vid/ImageSets/train.txt",
+            "image_pattern_mode" : "UAVTOD",
+            "all_train_txt": "/data1/jiahaoguo/dataset/UAVTOD_1/all/vid/ImageSets/train.txt"
+        },
+        "VID_UAVTOD_val": {
+            "dataset_dir": "/data1/jiahaoguo/dataset/UAVTOD_1",
+            "img_dir": "images",
+            "anno_path": "all/vid/Annotations/test",
+            "img_index": "all/vid/ImageSets/test.txt",
+            "image_pattern_mode" : "UAVTOD",
+            "coco_json":"/data1/jiahaoguo/dataset/UAVTOD_1/all/coco/test.json"
+        }, 
+
         "DET_train_30classes": {
             "img_dir": "ILSVRC2015/Data/DET",
             "anno_path": "ILSVRC2015/Annotations/DET",

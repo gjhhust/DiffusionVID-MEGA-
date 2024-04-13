@@ -311,15 +311,8 @@ class Resize(object):
 
 
 class VIDDemo(object):
-    CATEGORIES = ['_bg_',  # always index 0
-                  'airplane', 'antelope', 'bear', 'bicycle',
-                  'bird', 'bus', 'car', 'cattle',
-                  'dog', 'domestic_cat', 'elephant', 'fox',
-                  'giant_panda', 'hamster', 'horse', 'lion',
-                  'lizard', 'monkey', 'motorcycle', 'rabbit',
-                  'red_panda', 'sheep', 'snake', 'squirrel',
-                  'tiger', 'train', 'turtle', 'watercraft',
-                  'whale', 'zebra']
+    CATEGORIES = ['__background__',  # always index 0
+                'carcrowd',"bicycle", "bicyclecrowd", "car", "ignore", "people", "peoplecrowd", "static_peoplebicycle" ]
 
     def __init__(
             self,
@@ -422,23 +415,15 @@ class VIDDemo(object):
 
         return image_list
 
-    def read_coco_json(self, coco_json_path):
-        pass
-        return image_id_annotions_dict
-    
-    def run_on_image_folder(self, image_folder, suffix='.jpg', track_refs=False,coco_json=None):
-        if coco_json:
-            image_id_annotions_dict = self.read_coco_json(coco_json)
-            
+    def run_on_image_folder(self, image_folder, annotion_dir, suffix='.JPEG', track_refs=False):
         image_names = glob.glob(image_folder + '/*' + suffix)
         image_names = sorted(image_names)
         image_set_index = [i.split(suffix)[0] for i in image_names]
-        # start_id = int(image_set_index[0].split("/")[-1])
-        start_id = int(image_set_index[0].split("_")[-1])
+        start_id = int(image_set_index[0].split("/")[-1])
 
         img_dir = "%s" + suffix
         frame_seg_len = len(image_names)
-        pattern = image_folder + f"/{os.path.basename(image_folder)}_%04d"
+        pattern = image_folder + "/%07d"
 
         images_with_boxes = []
         # preparation for visualization
@@ -462,7 +447,7 @@ class VIDDemo(object):
         shuffled_indices = []
         for idx in tqdm(range(frame_seg_len)):
             original_image = cv2.imread(image_names[idx])
-            frame_id = int(image_set_index[idx].split("_")[-1])
+            frame_id = int(image_set_index[idx].split("/")[-1])
             img_cur = self.perform_transform(original_image)
             if self.method == "base":
                 image_with_boxes, _ = self.run_on_image(original_image, img_cur)
@@ -546,8 +531,8 @@ class VIDDemo(object):
                     infos["ref_g"] = img_refs_g
                     infos['frame_id_g'] = shuffled_indices
 
-                    # get anotation (GT) coco information
-                    anno_filename = image_names[frame_id].replace('/Data/', '/Annotations/').replace('.jpg', '.xml')
+                    # get anotation (GT) information
+                    anno_filename = os.path.join(annotion_dir, os.path.basename(image_names[frame_id]).replace(suffix, '.xml'))
                     if os.path.exists(anno_filename):
                         tree = ET.parse(anno_filename).getroot()
                         anno = self._preprocess_annotation(tree)
@@ -602,7 +587,7 @@ class VIDDemo(object):
                                 ref_image_with_box = ref_image.copy()
                                 ref_image_with_box = self.overlay_boxes(ref_image_with_box, proposal_contrib)
                                 name = os.path.join(self.output_folder,
-                                             "%06d" % idx + "_obj" + str(i) + "_ref" + str(j) + "_fid" + str(int(fids[j])) + ".jpg")
+                                             "%06d" % idx + "_obj" + str(i) + "_ref" + str(j) + "_fid" + str(int(fids[j])) + ".png")
                                 cv2.imwrite(name, ref_image_with_box)
             else:
                 raise NotImplementedError("method {} is not implemented.".format(self.method))
@@ -792,14 +777,7 @@ class VIDDemo(object):
 
     def _preprocess_annotation(self, target):
         classes_map = ['__background__',  # always index 0
-                       'n02691156', 'n02419796', 'n02131653', 'n02834778',
-                       'n01503061', 'n02924116', 'n02958343', 'n02402425',
-                       'n02084071', 'n02121808', 'n02503517', 'n02118333',
-                       'n02510455', 'n02342885', 'n02374451', 'n02129165',
-                       'n01674464', 'n02484322', 'n03790512', 'n02324045',
-                       'n02509815', 'n02411705', 'n01726692', 'n02355227',
-                       'n02129604', 'n04468005', 'n01662784', 'n04530566',
-                       'n02062744', 'n02391049']
+                'carcrowd',"bicycle", "bicyclecrowd", "car", "ignore", "people", "peoplecrowd", "static_peoplebicycle" ]
         self.classes_to_ind = dict(zip(classes_map, range(len(classes_map))))
         boxes = []
         gt_classes = []

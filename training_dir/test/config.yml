@@ -1,34 +1,34 @@
 AMP_VERBOSE: false
 DATALOADER:
   ASPECT_RATIO_GROUPING: true
-  NUM_WORKERS: 16
+  NUM_WORKERS: 1
   PIN_MEMORY: false
-  SIZE_DIVISIBILITY: 32
+  SIZE_DIVISIBILITY: 0
 DATASETS:
   TEST:
-  - VID_gaode_4_val
+  - VID_UAVTOD_val
   TRAIN:
-  - VID_gaode_4_train_2
+  - VID_UAVTOD_train_all
 DTYPE: float32
 INPUT:
   BRIGHTNESS: 0.166
   CONTRAST: 0.5
   HORIZONTAL_FLIP_PROB_TRAIN: 0.5
   HUE: 0.5
-  INFER_BATCH: 8
+  INFER_BATCH: 1
   MAX_SIZE_TEST: 1000
   MAX_SIZE_TRAIN: 1000
   MIN_SIZE_TEST: 600
   MIN_SIZE_TRAIN:
   - 600
   PIXEL_MEAN:
-  - 123.675
-  - 116.28
-  - 103.53
+  - 102.9801
+  - 115.9465
+  - 122.7717
   PIXEL_STD:
-  - 58.395
-  - 57.12
-  - 57.375
+  - 1.0
+  - 1.0
+  - 1.0
   RANROM_CROP_MAX_RATIO_TRAIN: 2.0
   RANROM_CROP_MAX_SIZE_TRAIN: 1.0
   RANROM_CROP_MIN_SIZE_TRAIN: 0.3
@@ -36,45 +36,15 @@ INPUT:
   RANROM_PAD_PROB_TRAIN: 0.5
   RANROM_PAD_SIZE_TRAIN: 1.0
   SATURATION: 0.5
-  TO_BGR255: false
-  TRANSFORM: true
+  TO_BGR255: true
+  TRANSFORM: false
   VERTICAL_FLIP_PROB_TRAIN: 0.0
 MODEL:
   BACKBONE:
-    CONV_BODY: R-101-torchvision
-    FREEZE_AT: 2
+    CONV_BODY: R-101-C4
     FREEZE_CONV_BODY_AT: 2
-    NAME: build_resnet_fpn_backbone
   CLS_AGNOSTIC_BBOX_REG: false
   DEVICE: cuda
-  DiffusionDet:
-    ACTIVATION: relu
-    ALPHA: 0.25
-    CLASS_WEIGHT: 2.0
-    DEEP_SUPERVISION: true
-    DIM_DYNAMIC: 64
-    DIM_FEEDFORWARD: 2048
-    DROPOUT: 0.0
-    GAMMA: 2.0
-    GIOU_WEIGHT: 2.0
-    HIDDEN_DIM: 256
-    L1_WEIGHT: 5.0
-    NHEADS: 8
-    NO_OBJECT_WEIGHT: 0.1
-    NUM_CLASSES: 11
-    NUM_CLS: 1
-    NUM_DYNAMIC: 2
-    NUM_HEADS: 3
-    NUM_HEADS_LOCAL: 1
-    NUM_PROPOSALS: 300
-    NUM_REG: 3
-    OTA_K: 5
-    PRIOR_PROB: 0.01
-    SAMPLE_STEP: 1
-    SNR_SCALE: 2.0
-    USE_FED_LOSS: false
-    USE_FOCAL: true
-    USE_NMS: true
   FBNET:
     ARCH: default
     ARCH_DEF: ''
@@ -95,13 +65,6 @@ MODEL:
     SCALE_FACTOR: 1.0
     WIDTH_DIVISOR: 1
   FPN:
-    FUSE_TYPE: sum
-    IN_FEATURES:
-    - res3
-    - res4
-    - res5
-    NORM: ''
-    OUT_CHANNELS: 256
     USE_GN: false
     USE_RELU: false
   GROUP_NORM:
@@ -110,35 +73,13 @@ MODEL:
     NUM_GROUPS: 32
   KEYPOINT_ON: false
   MASK_ON: false
-  META_ARCHITECTURE: DiffusionDet
-  PIXEL_MEAN:
-  - 123.675
-  - 116.28
-  - 103.53
-  PIXEL_STD:
-  - 58.395
-  - 57.12
-  - 57.375
+  META_ARCHITECTURE: GeneralizedRCNNMEGA
   RESNETS:
     BACKBONE_OUT_CHANNELS: 1024
     DEFORMABLE_GROUPS: 1
-    DEFORM_MODULATED: false
-    DEFORM_NUM_GROUPS: 1
-    DEFORM_ON_PER_STAGE:
-    - false
-    - false
-    - false
-    - false
-    DEPTH: 101
-    NORM: FrozenBN
     NUM_GROUPS: 1
-    OUT_FEATURES:
-    - res2
-    - res3
-    - res4
-    - res5
     RES2_OUT_CHANNELS: 256
-    RES5_DILATION: 1
+    RES5_DILATION: 2
     STAGE_WITH_DCN:
     - false
     - false
@@ -146,7 +87,7 @@ MODEL:
     - false
     STEM_FUNC: StemWithFixedBatchNorm
     STEM_OUT_CHANNELS: 64
-    STRIDE_IN_1X1: false
+    STRIDE_IN_1X1: true
     TRANS_FUNC: BottleneckWithFixedBatchNorm
     WIDTH_PER_GROUP: 64
     WITH_MODULATED_DCN: false
@@ -187,16 +128,15 @@ MODEL:
   ROI_BOX_HEAD:
     CONV_HEAD_DIM: 256
     DILATION: 1
-    FEATURE_EXTRACTOR: ResNet50Conv5ROIFeatureExtractor
+    FEATURE_EXTRACTOR: MEGAFeatureExtractor
     MLP_HEAD_DIM: 1024
     NUM_CLASSES: 31
     NUM_STACKED_CONVS: 4
     POOLER_RESOLUTION: 7
-    POOLER_SAMPLING_RATIO: 2
+    POOLER_SAMPLING_RATIO: 0
     POOLER_SCALES: &id001
     - 0.0625
-    POOLER_TYPE: ROIAlignV2
-    PREDICTOR: FastRCNNPredictor
+    PREDICTOR: FPNPredictor
     USE_GN: false
   ROI_HEADS:
     BATCH_SIZE_PER_IMAGE: 128
@@ -208,10 +148,6 @@ MODEL:
     BG_IOU_THRESHOLD: 0.5
     DETECTIONS_PER_IMG: 300
     FG_IOU_THRESHOLD: 0.5
-    IN_FEATURES:
-    - p3
-    - p4
-    - p5
     NMS: 0.5
     POSITIVE_FRACTION: 0.25
     SCORE_THRESH: 0.001
@@ -279,14 +215,6 @@ MODEL:
     STRADDLE_THRESH: 0
     USE_FPN: false
   RPN_ONLY: false
-  SWIN:
-    OUT_FEATURES:
-    - 0
-    - 1
-    - 2
-    - 3
-    SIZE: B
-    USE_CHECKPOINT: false
   VID:
     DFF:
       MAX_OFFSET: 0
@@ -301,7 +229,7 @@ MODEL:
     FLOWNET_WEIGHT: models/flownet.ckpt
     IGNORE: false
     MEGA:
-      ALL_FRAME_INTERVAL: 8
+      ALL_FRAME_INTERVAL: 25
       GLOBAL:
         BOX_ATTEND: true
         ENABLE: true
@@ -309,30 +237,30 @@ MODEL:
         PIXEL_STAGE: 0
         RES_STAGE: 1
         SHUFFLE: true
-        SIZE: 24
-        STOP_UPDATE_AFTER_INIT_TEST: true
-      KEY_FRAME_LOCATION: 0
+        SIZE: 10
+        STOP_UPDATE_AFTER_INIT_TEST: false
+      KEY_FRAME_LOCATION: 12
       LOCAL:
-        ENABLE: false
+        ENABLE: true
         PIXEL_ATTEND: false
-      MAX_OFFSET: 7
+      MAX_OFFSET: 12
       MEMORY:
-        ENABLE: false
+        ENABLE: true
         SIZE: 25
-      MEMORY_MANAGEMENT_METRIC: distance
+      MEMORY_MANAGEMENT_METRIC: queue
       MEMORY_MANAGEMENT_SIZE_PIXEL_TEST: 1000
       MEMORY_MANAGEMENT_SIZE_PIXEL_TRAIN: 3000
-      MEMORY_MANAGEMENT_SIZE_TEST: 900
+      MEMORY_MANAGEMENT_SIZE_TEST: 750
       MEMORY_MANAGEMENT_SIZE_TRAIN: 300
-      MEMORY_MANAGEMENT_TYPE: greedy
+      MEMORY_MANAGEMENT_TYPE: none
       MHA: false
-      MIN_OFFSET: 0
+      MIN_OFFSET: -12
       RATIO: 0.2
-      REF_NUM_GLOBAL: 4
+      REF_NUM_GLOBAL: 2
       REF_NUM_LOCAL: 2
       REF_NUM_MEM: 3
       SHUFFLED_CUR_TEST: false
-    METHOD: diffusion
+    METHOD: mega
     RDN:
       ALL_FRAME_INTERVAL: 37
       KEY_FRAME_LOCATION: 18
@@ -344,18 +272,18 @@ MODEL:
       ATTENTION:
         ADVANCED_STAGE: 0
         EMBED_DIM: 64
-        ENABLE: false
+        ENABLE: true
         GROUP: 16
-        STAGE: 1
+        STAGE: 3
       REDUCE_CHANNEL: false
     RPN:
       REF_POST_NMS_TOP_N: 75
       REF_PRE_NMS_TOP_N: 6000
-  WEIGHT: pth/DiffusionVID_R101.pth
+  WEIGHT: catalog://ImageNetPretrained/MSRA/R-101
 OUTPUT_DIR: training_dir/test
 PATHS_CATALOG: /data1/jiahaoguo/DiffusionVID/mega_core/config/paths_catalog.py
 SOLVER:
-  ACCUMULATION_STEPS: 2
+  ACCUMULATION_STEPS: 1
   BACKBONE_MULTIPLIER: 0.1
   BASE_LR: 0.0001
   BATCH_REUSE_STEPS: 1
@@ -363,22 +291,21 @@ SOLVER:
   CHECKPOINT_PERIOD: 5000
   CLIP_GRADIENTS:
     CLIP_TYPE: full_model
-    CLIP_VALUE: 1.0
-    ENABLED: true
-    NORM_TYPE: 2.0
+    CLIP_VALUE: 0
+    ENABLED: false
   GAMMA: 0.1
   IMS_PER_BATCH: 1
   LR_SCHEDULER_TYPE: step
-  MAX_ITER: 65000
+  MAX_ITER: 49000
   MOMENTUM: 0.9
-  OPTIMIZER: ADAMW
   OPTIMIZER_TYPE: adamw
   STEPS:
+  - 24000
+  - 32000
   - 40000
-  - 60000
-  TEST_PERIOD: 5000
+  TEST_PERIOD: 40
   WARMUP_FACTOR: 0.3333333333333333
-  WARMUP_ITERS: 13727
+  WARMUP_ITERS: 7857
   WARMUP_METHOD: linear
   WEIGHT_DECAY: 0.0001
   WEIGHT_DECAY_BIAS: 0.0001

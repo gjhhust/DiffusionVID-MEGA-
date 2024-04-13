@@ -34,10 +34,11 @@ parser.add_argument(
     help="where to store the visulization result.",
 )
 parser.add_argument(
-    "--coco-json",
-    default="/data1/jiahaoguo/dataset/gaode_4_all/annotations/test_half.json",
-    help="coco格式的预测.",
+    "--annotion-dir",
+    default="demo/visualization/base",
+    help="where to store the visulization result.",
 )
+
 parser.add_argument(
     "--video",
     action="store_true",
@@ -55,7 +56,7 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-cfg.merge_from_file("configs/BASE_RCNN_1gpu.yaml")
+cfg.merge_from_file("configs/BASE_RCNN_3gpu.yaml")
 if 'Diffusion' in args.config:
     from mega_core.modeling.detector.diffusion_det import add_diffusiondet_config
     add_diffusiondet_config(cfg)
@@ -82,7 +83,7 @@ vid_demo = VIDDemo(
 )
 
 if not args.video:
-    visualization_results = vid_demo.run_on_image_folder(args.visualize_path, suffix=args.suffix, track_refs=args.track_refs, coco_json = args.coco_json)
+    visualization_results = vid_demo.run_on_image_folder(args.visualize_path, annotion_dir = args.annotion_dir, suffix=args.suffix, track_refs=args.track_refs)
 else:
     visualization_results = vid_demo.run_on_video(args.visualize_path)
 

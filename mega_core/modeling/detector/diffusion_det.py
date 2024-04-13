@@ -407,12 +407,12 @@ class DiffusionDet(nn.Module):
         self.seg_len = infos["seg_len"]  # total video length
         self.last_queue_id = infos["last_queue_id"]  # dir id of the last frame of queue
 
-        if (self.frame_id % self.infer_batch) -1 != 0:
-            self.local_img_queue += infos["ref_l"]
-            return []
-        else:
-            infos["ref_l"] = self.local_img_queue + infos["ref_l"]
-            self.local_img_queue = []
+        # if (self.frame_id % self.infer_batch) -1 != 0:
+        #     self.local_img_queue += infos["ref_l"]
+        #     return []
+        # else:
+        infos["ref_l"] = self.local_img_queue + infos["ref_l"]
+        self.local_img_queue = []
 
         # 1. extract features
         if infos["ref_l"] or infos["ref_g"]:
