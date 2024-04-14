@@ -22,10 +22,10 @@ INPUT:
   PIXEL_STD: [ 58.395, 57.120, 57.375 ]
   TO_BGR255: False # pretrained torchvision weight use RGB format.
   TRANSFORM: True
-  INFER_BATCH: 9 # must be same with MAX_OFFSET + 1
-  MIN_SIZE_TRAIN: (1024,)
+  INFER_BATCH: 7 # must be same with MAX_OFFSET + 1
+  MIN_SIZE_TRAIN: (920,)
   MAX_SIZE_TRAIN: 1024
-  MIN_SIZE_TEST: 1024
+  MIN_SIZE_TEST: 920
   MAX_SIZE_TEST: 1024
 DATASETS:
   TRAIN: ("DET_train_30classes", "VID_train_15frames")

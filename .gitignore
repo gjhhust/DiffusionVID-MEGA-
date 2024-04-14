@@ -33,3 +33,8 @@ dist/
 
 # project dirs
 /models
+training_dir
+install
+detectron2
+apex
+cityscapesScripts

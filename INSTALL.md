@@ -54,6 +54,8 @@ conda install ipython pip
 # we give the instructions for CUDA 10.0
 # conda install pytorch=1.3.0 torchvision cudatoolkit=10.0 -c pytorch
 conda install pytorch=1.8.1 torchvision cudatoolkit=11.1 -c pytorch
+pip install torch==1.10.0+cu111 torchvision==0.11.0+cu111 torchaudio==0.10.0 -f https://download.pytorch.org/whl/torch_stable.html
+
 
 sudo apt-get update
 ```
@@ -80,6 +82,10 @@ git clone https://github.com/NVIDIA/apex.git
 cd apex
 python setup.py install --cuda_ext --cpp_ext
 
+# if error
+git checkout 2386a912164b0c5cfcd8be7a2b890fbac5607c82
+pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" ./
+
 # clone our lib:
 cd $INSTALL_DIR
 git clone https://github.com/sdroh1027/DiffusionVID.git
@@ -90,6 +96,7 @@ pip install -r requirements.txt
 
 # install the lib with symbolic links
 python setup.py build develop
+
 
 unset INSTALL_DIR
 

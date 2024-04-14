@@ -6,21 +6,21 @@ MODEL:
         ENABLE: True  # local attention
         STAGE: 3  # local attention stages
     MEGA:
-      MIN_OFFSET: -8
-      MAX_OFFSET: 8
-      ALL_FRAME_INTERVAL: 18
-      KEY_FRAME_LOCATION: 8
+      MIN_OFFSET: -6
+      MAX_OFFSET: 6
+      ALL_FRAME_INTERVAL: 13
+      KEY_FRAME_LOCATION: 6
       SHUFFLED_CUR_TEST : False
       LOCAL:
         ENABLE: True  # local attention
         PIXEL_ATTEND: False
       MEMORY:
         ENABLE: True  # long range memory
-        SIZE: 18
+        SIZE: 13
       GLOBAL:
         ENABLE: True  # global attention
         RES_STAGE: 1
-        SIZE: 8  # global ref frames in initialization
+        SIZE: 5  # global ref frames in initialization
         STOP_UPDATE_AFTER_INIT_TEST: False
         BOX_ATTEND: True
         PIXEL_ATTEND: False

@@ -157,6 +157,10 @@ def remove_modules(model_keys, state_dict, skip_names):
 
 
 import torch.distributed as dist
+def get_longest_strings(string_list):
+    max_length = max(len(s) for s in string_list)  # 计算字符串列表中最长字符串的长度
+    longest_strings = [s for s in string_list if len(s) == max_length]  # 找到所有最长字符串
+    return longest_strings
 
 def load_state_dict(model, loaded_state_dict, flownet=False, skip_modules=None,strict_loading=False):
     model_state_dict = model.state_dict()
@@ -165,6 +169,7 @@ def load_state_dict(model, loaded_state_dict, flownet=False, skip_modules=None,s
     if not isinstance(model, torch.nn.parallel.DistributedDataParallel):
         loaded_state_dict = strip_prefix_if_present(loaded_state_dict, prefix="module.")
 
+    loaded_state_dict = strip_prefix_if_present(loaded_state_dict, prefix="module.")
     # print(f"model_state_dict:{list(model_state_dict.keys())[0]}")
     # print(f"loaded_state_dict:{list(loaded_state_dict.keys())[0]}")
     mismatched_layers = []
@@ -174,11 +179,21 @@ def load_state_dict(model, loaded_state_dict, flownet=False, skip_modules=None,s
             model_state_dict[name] = torch.from_numpy(param)
 
     for name, param in model_state_dict.items():
+        result = [s for s in loaded_state_dict.keys() if s in name]
         if name in loaded_state_dict and param.shape == loaded_state_dict[name].shape:
             model_state_dict[name] = loaded_state_dict[name]
+            print(f"Info: Layer '{name}' load weight name: '{name}'")
+        elif len(result)>0:
+            result = get_longest_strings(result)
+            if len(result) == 1:
+                model_state_dict[name] = loaded_state_dict[result[0]]
+                print(f"Info: Layer '{name}' load weight name: '{result[0]}'")
+            else:
+                mismatched_layers.append(name)
+                print(f"Warning: model '{result}' load confict.")
         else:
             mismatched_layers.append(name)
-            print(f"Warning: Layer '{name}' not loaded due to shape mismatch.")
+            # print(f"Warning: Layer '{name}' not loaded due to shape mismatch.")
 
     if dist.is_initialized():
         model.load_state_dict(model_state_dict, strict=False)
