@@ -76,8 +76,7 @@ INPUT:
   TO_BGR255: False # pretrained torchvision weight use RGB format.
   TRANSFORM: True
   INFER_BATCH: 8 # must be same with MAX_OFFSET + 1INPUT:
-  MIN_SIZE_TRAIN: (960,)
+  MIN_SIZE_TRAIN: (1024,)
   MAX_SIZE_TRAIN: 1024
-  MIN_SIZE_TEST: 960
+  MIN_SIZE_TEST: 1024
   MAX_SIZE_TEST: 1024
-  TRANSFORM: False

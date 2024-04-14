@@ -19,3 +19,6 @@ python tools/test_net.py \
         --config-file  configs/vid_R_101_DiffusionVID_UAVTOD.yaml \
         MODEL.WEIGHT training_dir/vid_R_101_DiffusionVID_UAVTOD/model_final.pth \
         DTYPE float16
+
+
+CUDA_DEVICE_ORDER="PCI_BUS_ID" CUDA_VISIBLE_DEVICES=0 python -c "import torch;print(torch.cuda.is_available());"

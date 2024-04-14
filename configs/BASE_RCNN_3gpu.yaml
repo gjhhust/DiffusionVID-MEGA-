@@ -18,11 +18,15 @@ MODEL:
   RESNETS:
     RES5_DILATION: 2
 INPUT:
-  MIN_SIZE_TRAIN: (820,)
+  PIXEL_MEAN: [ 123.675, 116.280, 103.530 ] # RGB
+  PIXEL_STD: [ 58.395, 57.120, 57.375 ]
+  TO_BGR255: False # pretrained torchvision weight use RGB format.
+  TRANSFORM: True
+  INFER_BATCH: 9 # must be same with MAX_OFFSET + 1
+  MIN_SIZE_TRAIN: (1024,)
   MAX_SIZE_TRAIN: 1024
-  MIN_SIZE_TEST: 820
+  MIN_SIZE_TEST: 1024
   MAX_SIZE_TEST: 1024
-  TRANSFORM: False
 DATASETS:
   TRAIN: ("DET_train_30classes", "VID_train_15frames")
   TEST: ("VID_val_frames",)
@@ -31,12 +35,12 @@ SOLVER:
   LR_SCHEDULER_TYPE: "step" # step or cosine
   BASE_LR: 0.001 # 0.00001 # 0.001 for SGD
   WEIGHT_DECAY: 0.0001 # 0.000025  # 0.0001 for SGD
-  STEPS: (100000, ) # (240000, ) for aug # (120000,) # (80000, ) for SGD
-  MAX_ITER: 160000 # 360000 for aug # 160000 # 120000 for SGD
+  STEPS: (28000, 39000)  # (240000, ) for aug # (120000,) # (80000, ) for SGD
+  MAX_ITER: 49000 # 360000 for aug # 160000 # 120000 for SGD
   IMS_PER_BATCH: 3
-  WARMUP_ITERS: 500 # 1500 for aug
-  TEST_PERIOD: 40000
-  CHECKPOINT_PERIOD: 20000
+  WARMUP_ITERS: 7857 # 1500 for aug
+  TEST_PERIOD: 5000
+  CHECKPOINT_PERIOD: 5000
   ACCUMULATION_STEPS: 1  # batch size multiplier
   BATCH_REUSE_STEPS: 1
   

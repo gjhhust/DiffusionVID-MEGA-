@@ -6,21 +6,21 @@ MODEL:
         ENABLE: True  # local attention
         STAGE: 3  # local attention stages
     MEGA:
-      MIN_OFFSET: -12
-      MAX_OFFSET: 12
-      ALL_FRAME_INTERVAL: 25
-      KEY_FRAME_LOCATION: 12
+      MIN_OFFSET: -8
+      MAX_OFFSET: 8
+      ALL_FRAME_INTERVAL: 18
+      KEY_FRAME_LOCATION: 8
       SHUFFLED_CUR_TEST : False
       LOCAL:
         ENABLE: True  # local attention
         PIXEL_ATTEND: False
       MEMORY:
         ENABLE: True  # long range memory
-        SIZE: 25
+        SIZE: 18
       GLOBAL:
         ENABLE: True  # global attention
         RES_STAGE: 1
-        SIZE: 10  # global ref frames in initialization
+        SIZE: 8  # global ref frames in initialization
         STOP_UPDATE_AFTER_INIT_TEST: False
         BOX_ATTEND: True
         PIXEL_ATTEND: False
@@ -36,27 +36,21 @@ MODEL:
   ROI_BOX_HEAD:
     FEATURE_EXTRACTOR: "MEGAFeatureExtractor"
     PREDICTOR: "FPNPredictor"
-SOLVER:
-  OPTIMIZER_TYPE: "adamw" #"adamw" "sgd"
-  LR_SCHEDULER_TYPE: "step" # step or cosine
-  BASE_LR: 0.0001 # 0.00001 # 0.001 for SGD
-  BIAS_LR_FACTOR: 1.0
-  BACKBONE_MULTIPLIER: 0.1
-  WEIGHT_DECAY: 0.0001
-  WEIGHT_DECAY_BIAS: 0.0001
-  STEPS: (24000, 32000, 40000) # (240000, ) for aug # (80000, ) for COCO pretrained
-  MAX_ITER: 49000 # 360000 for aug # 120000 for COCO pretrained
-  WARMUP_ITERS: 7857 # 18000
-  TEST_PERIOD: 5000
-  CHECKPOINT_PERIOD: 5000
-  ACCUMULATION_STEPS: 1  # batch size multiplier
-  BATCH_REUSE_STEPS: 1
+# SOLVER:
+#   OPTIMIZER_TYPE: "adamw" #"adamw" "sgd"
+#   LR_SCHEDULER_TYPE: "step" # step or cosine
+#   BASE_LR: 0.0001 # 0.00001 # 0.001 for SGD
+#   BIAS_LR_FACTOR: 1.0
+#   BACKBONE_MULTIPLIER: 0.1
+#   WEIGHT_DECAY: 0.0001
+#   WEIGHT_DECAY_BIAS: 0.0001
+#   STEPS: (24000, 32000, 40000) # (240000, ) for aug # (80000, ) for COCO pretrained
+#   MAX_ITER: 49000 # 360000 for aug # 120000 for COCO pretrained
+#   WARMUP_ITERS: 7857 # 18000
+#   TEST_PERIOD: 5000
+#   CHECKPOINT_PERIOD: 5000
+#   ACCUMULATION_STEPS: 1  # batch size multiplier
+#   BATCH_REUSE_STEPS: 1
 DATASETS:
   TRAIN: ("VID_UAVTOD_train_all",)
-  TEST: ("VID_UAVTOD_val",) # ("VID_val_videos",) # ("YouTube_Objects",)
-# INPUT:
-#   PIXEL_MEAN: [ 123.675, 116.280, 103.530 ] # RGB
-#   PIXEL_STD: [ 58.395, 57.120, 57.375 ]
-#   TO_BGR255: False # pretrained torchvision weight use RGB format.
-#   TRANSFORM: True
-#   INFER_BATCH: 8 # must be same with MAX_OFFSET + 1
+  TEST: ("VID_UAVTOD_val",) # ("VID_val_videos",) # ("YouTube_Objects",)s
