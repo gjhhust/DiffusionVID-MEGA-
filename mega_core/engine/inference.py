@@ -92,6 +92,10 @@ def compute_on_dataset(model, data_loader, device, bbox_aug, method, timer=None,
                     {img_id: result for img_id, result in zip(image_ids_list, output)}
                 )
         else:
+            if isinstance(image_ids[0], int):
+                image_ids = list(image_ids)
+                image_ids[0] = [image_ids[0]]
+                
             results_dict.update(
                 {img_id: result for img_id, result in zip(image_ids[0], output)}
             )
