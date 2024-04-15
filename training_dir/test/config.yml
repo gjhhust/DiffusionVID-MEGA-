@@ -279,7 +279,7 @@ MODEL:
     RPN:
       REF_POST_NMS_TOP_N: 75
       REF_PRE_NMS_TOP_N: 6000
-  WEIGHT: catalog://ImageNetPretrained/MSRA/R-101
+  WEIGHT: models/MEGA_R_101.pth
 OUTPUT_DIR: training_dir/test
 PATHS_CATALOG: /data1/jiahaoguo/DiffusionVID/mega_core/config/paths_catalog.py
 SOLVER:

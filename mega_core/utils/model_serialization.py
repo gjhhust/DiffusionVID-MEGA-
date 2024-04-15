@@ -185,7 +185,7 @@ def load_state_dict(model, loaded_state_dict, flownet=False, skip_modules=None,s
             print(f"Info: Layer '{name}' load weight name: '{name}'")
         elif len(result)>0:
             result = get_longest_strings(result)
-            if len(result) == 1:
+            if len(result) == 1 and param.shape == loaded_state_dict[result[0]].shape:
                 model_state_dict[name] = loaded_state_dict[result[0]]
                 print(f"Info: Layer '{name}' load weight name: '{result[0]}'")
             else:

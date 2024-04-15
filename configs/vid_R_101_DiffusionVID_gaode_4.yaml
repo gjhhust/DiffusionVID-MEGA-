@@ -1,6 +1,6 @@
 MODEL:
   META_ARCHITECTURE: "DiffusionDet"
-  WEIGHT: "pth/DiffusionVID_R101.pth"
+  WEIGHT: "models/DiffusionVID_R101.pth"
   BACKBONE:
     NAME: "build_resnet_fpn_backbone"
     CONV_BODY: "R-101-torchvision"

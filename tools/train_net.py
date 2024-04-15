@@ -69,12 +69,14 @@ def train(cfg, local_rank, distributed):
         cfg, model, optimizer, scheduler, output_dir, save_to_disk
     )
     extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT, ignore=cfg.MODEL.VID.IGNORE, skip_modules=['class_logits'])
-    if cfg.MODEL.VID.METHOD in ("fgfa", "dff"):
+    if cfg.MODEL.VID.METHOD in ("fgfa", "dff") and cfg.MODEL.VID.FLOWNET_WEIGHT != "":
         checkpointer.load_flownet(cfg.MODEL.VID.FLOWNET_WEIGHT)
 
     if not cfg.MODEL.VID.IGNORE:
         arguments.update(extra_checkpoint_data)
 
+    print(f"cfg.MODEL.WEIGHT: {cfg.MODEL.WEIGHT}")
+    print(f"cfg.MODEL.WEIGHT: {cfg.MODEL.VID.FLOWNET_WEIGHT}")
     data_loader = make_data_loader(
         cfg,
         is_train=True,

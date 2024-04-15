@@ -33,14 +33,6 @@ class VIDMEGADataset(VIDDataset):
                     self.start_id.append(id)
                 else:
                     self.start_id.append(self.start_index[-1])
-    def filename_to_frame_id(self,filename):
-        if self.image_pattern_mode in ["imagevid", "UAVTOD"]:
-            frame_id = int(filename.split("/")[-1])
-        elif self.image_pattern_mode == "gaode_4":
-            frame_id = int(filename.split("/")[-1].split("_")[-1])
-        if self.image_pattern_mode in ["UAVTOD"]:
-            frame_id = int(filename.split("/")[-1]) + 1 #图片文件对应到注释文件的帧号+1
-        return frame_id
 
     # def check_file(self, path, idx):
     #     while not os.path.exists(path):

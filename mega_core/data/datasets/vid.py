@@ -106,6 +106,15 @@ class VIDDataset(torch.utils.data.Dataset):
 
         self.annos = self.load_annos(os.path.join(self.cache_dir, self.image_set + "_anno.pkl"))
     
+    
+    def filename_to_frame_id(self,filename):
+        if self.image_pattern_mode in ["imagevid"]:
+            frame_id = int(filename.split("/")[-1])
+        elif self.image_pattern_mode == "gaode_4":
+            frame_id = int(filename.split("/")[-1].split("_")[-1])
+        if self.image_pattern_mode in ["UAVTOD"]:
+            frame_id = int(filename.split("/")[-1]) + 1 #图片文件对应到注释文件的帧号+1
+        return frame_id
         
     def __getitem__(self, idx):
         if self.is_train:

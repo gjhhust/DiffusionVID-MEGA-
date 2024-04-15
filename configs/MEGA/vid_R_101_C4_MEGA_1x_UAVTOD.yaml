@@ -1,4 +1,6 @@
 MODEL:
+  WEIGHT: models/MEGA_R_101.pth
+  # WEIGHT: "catalog://ImageNetPretrained/MSRA/R-101"
   VID:
     METHOD: "mega"
     ROI_BOX_HEAD:
@@ -30,27 +32,26 @@ MODEL:
       MEMORY_MANAGEMENT_METRIC: "queue"  # mamba, queue, distance
       MEMORY_MANAGEMENT_TYPE: "none"  # once, twice, sequential, greedy, random
   META_ARCHITECTURE: "GeneralizedRCNNMEGA"
-  WEIGHT: "catalog://ImageNetPretrained/MSRA/R-101"
   BACKBONE:
     CONV_BODY: "R-101-C4"
   ROI_BOX_HEAD:
     FEATURE_EXTRACTOR: "MEGAFeatureExtractor"
     PREDICTOR: "FPNPredictor"
-# SOLVER:
-#   OPTIMIZER_TYPE: "adamw" #"adamw" "sgd"
-#   LR_SCHEDULER_TYPE: "step" # step or cosine
-#   BASE_LR: 0.0001 # 0.00001 # 0.001 for SGD
-#   BIAS_LR_FACTOR: 1.0
-#   BACKBONE_MULTIPLIER: 0.1
-#   WEIGHT_DECAY: 0.0001
-#   WEIGHT_DECAY_BIAS: 0.0001
-#   STEPS: (24000, 32000, 40000) # (240000, ) for aug # (80000, ) for COCO pretrained
-#   MAX_ITER: 49000 # 360000 for aug # 120000 for COCO pretrained
-#   WARMUP_ITERS: 7857 # 18000
-#   TEST_PERIOD: 5000
-#   CHECKPOINT_PERIOD: 5000
-#   ACCUMULATION_STEPS: 1  # batch size multiplier
-#   BATCH_REUSE_STEPS: 1
+SOLVER:
+  OPTIMIZER_TYPE: "adamw" #"adamw" "sgd"
+  LR_SCHEDULER_TYPE: "step" # step or cosine
+  BASE_LR: 0.0001 # 0.00001 # 0.001 for SGD
+  BIAS_LR_FACTOR: 1.0
+  BACKBONE_MULTIPLIER: 0.1
+  WEIGHT_DECAY: 0.0001
+  WEIGHT_DECAY_BIAS: 0.0001
+  STEPS: (28000, 40000) # (240000, ) for aug # (80000, ) for COCO pretrained
+  MAX_ITER: 49000 # 360000 for aug # 120000 for COCO pretrained
+  WARMUP_ITERS: 7857 # 18000
+  TEST_PERIOD: 5000
+  CHECKPOINT_PERIOD: 5000
+  ACCUMULATION_STEPS: 1  # batch size multiplier
+  BATCH_REUSE_STEPS: 1
 DATASETS:
   TRAIN: ("VID_UAVTOD_train_all",)
   TEST: ("VID_UAVTOD_val",) # ("VID_val_videos",) # ("YouTube_Objects",)s

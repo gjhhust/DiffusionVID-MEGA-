@@ -5,19 +5,15 @@ import numpy as np
 from .vid import VIDDataset
 from mega_core.config import cfg
 
-class VIDFGFADataset(VIDDataset):
-    def __init__(self, image_set, data_dir, img_dir, anno_path, img_index, transforms, **kwargs):
-        super(VIDFGFADataset, self).__init__(image_set, data_dir, img_dir, anno_path, img_index, transforms, **kwargs)
-        self.start_frame_number = 1 #注释帧号开始
+class VIDFGFADataset_(VIDDataset):
+    def __init__(self, image_set, data_dir, img_dir, anno_path, img_index, transforms, is_train=True):
+        super(VIDFGFADataset_, self).__init__(image_set, data_dir, img_dir, anno_path, img_index, transforms, is_train=is_train)
         if not self.is_train:
             self.start_index = []
-            self.start_id = []
             for id, image_index in enumerate(self.image_set_index):
-                # TODO: 图片名获得frame_number的方式
-                frame_id = self.filename_to_frame_id(image_index)
-                if frame_id == self.start_frame_number: ## 0
+                frame_id = int(image_index.split("/")[-1])
+                if frame_id == self.start_frame_number:
                     self.start_index.append(id)
-            print(self.start_index[:10])
 
     def _get_train(self, idx):
         filename = self.image_set_index[idx]
@@ -55,7 +51,7 @@ class VIDFGFADataset(VIDDataset):
         img = Image.open(self._img_dir % filename).convert("RGB")
 
         # give the current frame a category. 0 for start, 1 for normal
-        frame_id = self.filename_to_frame_id(filename)
+        frame_id = int(filename.split("/")[-1])
         frame_category = 0
         if frame_id != self.start_frame_number:
             frame_category = 1

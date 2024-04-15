@@ -1,0 +1,15 @@
+MODEL:
+  VID:
+    METHOD: "fgfa"
+    FLOWNET_WEIGHT: ''
+  META_ARCHITECTURE: "GeneralizedRCNNFGFA"
+  # WEIGHT: "catalog://ImageNetPretrained/MSRA/R-101"
+  WEIGHT: "model/FGFA_R_101.pth"
+  BACKBONE:
+    CONV_BODY: "R-101-C4"
+  ROI_BOX_HEAD:
+    FEATURE_EXTRACTOR: "ResNetConv52MLPFeatureExtractor"
+    PREDICTOR: "FPNPredictor"
+DATASETS:
+  TRAIN: ("VID_UAVTOD_train_all",)
+  TEST: ("VID_UAVTOD_val",) # ("VID_val_videos",) # ("YouTube_Objects",)
